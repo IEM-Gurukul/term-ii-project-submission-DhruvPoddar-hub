@@ -1,1 +1,26 @@
+abstract class Account {
 
+    protected int accountNumber;
+    protected String holderName;
+    protected double balance;
+
+    public Account(int accountNumber, String holderName, double balance) {
+        this.accountNumber = accountNumber;
+        this.holderName = holderName;
+        this.balance = balance;
+    }
+
+    public void deposit(double amount) {
+        balance += amount;
+    }
+
+    public abstract void withdraw(double amount) throws Exception;
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public int getAccountNumber() {
+        return accountNumber;
+    }
+}
