@@ -39,3 +39,21 @@ class SavingsAccount extends Account {
         balance -= amount;
     }
 }
+
+
+class CurrentAccount extends Account {
+
+    private double overdraftLimit = 1000;
+
+    public CurrentAccount(int accountNumber, String holderName, double balance) {
+        super(accountNumber, holderName, balance);
+    }
+
+    @Override
+    public void withdraw(double amount) throws Exception {
+        if (amount > balance + overdraftLimit) {
+            throw new Exception("Overdraft limit exceeded");
+        }
+        balance -= amount;
+    }
+}
