@@ -24,3 +24,18 @@ abstract class Account {
         return accountNumber;
     }
 }
+
+class SavingsAccount extends Account {
+
+    public SavingsAccount(int accountNumber, String holderName, double balance) {
+        super(accountNumber, holderName, balance);
+    }
+
+    @Override
+    public void withdraw(double amount) throws Exception {
+        if (amount > balance) {
+            throw new Exception("Insufficient Balance");
+        }
+        balance -= amount;
+    }
+}
