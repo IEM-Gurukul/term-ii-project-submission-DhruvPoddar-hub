@@ -103,3 +103,31 @@ class BankService {
         receiver.deposit(amount);
     }
 }
+
+public class BankApplication {
+
+    public static void main(String[] args) {
+
+        try {
+
+            AccountRepository repo = new AccountRepository();
+            BankService service = new BankService(repo);
+
+            Account a1 = new SavingsAccount(101, "Alice", 5000);
+            Account a2 = new CurrentAccount(102, "Bob", 2000);
+
+            repo.saveAccount(a1);
+            repo.saveAccount(a2);
+
+            service.deposit(101, 1000);
+            service.withdraw(102, 500);
+            service.transfer(101, 102, 2000);
+
+            System.out.println("Alice Balance: " + a1.getBalance());
+            System.out.println("Bob Balance: " + a2.getBalance());
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+}
