@@ -57,3 +57,23 @@ class CurrentAccount extends Account {
         balance -= amount;
     }
 }
+
+
+import java.util.HashMap;
+
+class AccountRepository {
+
+    private HashMap<Integer, Account> accounts = new HashMap<>();
+
+    public void saveAccount(Account account) {
+        accounts.put(account.getAccountNumber(), account);
+    }
+
+    public Account getAccount(int accNo) throws Exception {
+        if (!accounts.containsKey(accNo)) {
+            throw new Exception("Account Not Found");
+        }
+        return accounts.get(accNo);
+    }
+}
+
