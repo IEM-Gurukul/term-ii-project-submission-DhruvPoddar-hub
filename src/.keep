@@ -77,3 +77,29 @@ class AccountRepository {
     }
 }
 
+class BankService {
+
+    private AccountRepository repository;
+
+    public BankService(AccountRepository repository) {
+        this.repository = repository;
+    }
+
+    public void deposit(int accNo, double amount) throws Exception {
+        Account acc = repository.getAccount(accNo);
+        acc.deposit(amount);
+    }
+
+    public void withdraw(int accNo, double amount) throws Exception {
+        Account acc = repository.getAccount(accNo);
+        acc.withdraw(amount);
+    }
+
+    public void transfer(int from, int to, double amount) throws Exception {
+        Account sender = repository.getAccount(from);
+        Account receiver = repository.getAccount(to);
+
+        sender.withdraw(amount);
+        receiver.deposit(amount);
+    }
+}
