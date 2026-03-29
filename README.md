@@ -11,38 +11,38 @@ The project aims to develop a Bank Management System that allows users to perfor
 
 ## Target User
 
---Students learning OOP concepts
---Beginner developers
---Users needing a simple banking simulation system
+1. Students learning OOP concepts
+2. Beginner developers
+3. Users needing a simple banking simulation system
 
 ## Core Features
 
---Deposit money into account
---Withdraw money with validation
---Transfer funds between accounts
---Check account balance
---GUI-based interaction using Swing
---Error handling using custom exceptions
+1. Deposit money into account
+2. Withdraw money with validation
+3. Transfer funds between accounts
+4. Check account balance
+5. GUI-based interaction using Swing
+6. Error handling using custom exceptions
 
 
 ## OOP Concepts Used
 
-🔹 Abstraction:
+1. Abstraction:
    Implemented using the Account abstract class
    Defines common structure for all account types
-🔹 Inheritance:
+2. Inheritance:
    SavingsAccount and CurrentAccount extend Account
    Reuse common properties and methods
-🔹 Polymorphism:
+3. Polymorphism:
    withdraw() method overridden in both subclasses
    Different behavior for different account types
-🔹 Exception Handling:
+4. Exception Handling:
    Custom exceptions:
    InsufficientBalanceException
    OverdraftLimitExceededException
    AccountNotFoundException
    Ensures safe and controlled execution
-🔹 Collections / Threads:
+5. Collections / Threads:
    HashMap used in AccountRepository to store accounts
    No multithreading used (single-threaded GUI application)
 
@@ -50,9 +50,9 @@ The project aims to develop a Bank Management System that allows users to perfor
 
 The system follows a layered architecture consisting of three main layers:
 
---Presentation Layer (GUI): Handles user interaction through Swing components
---Service Layer (BankService): Contains business logic for banking operations
---Data Layer (AccountRepository): Manages account storage using a HashMap
+1. Presentation Layer (GUI): Handles user interaction through Swing components
+2. Service Layer (BankService): Contains business logic for banking operations
+3. Data Layer (AccountRepository): Manages account storage using a HashMap
 
 ## How to Run
 
