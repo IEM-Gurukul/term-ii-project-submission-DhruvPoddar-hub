@@ -11,40 +11,40 @@ The project aims to develop a Bank Management System that allows users to perfor
 
 ## Target User
 
--Students learning OOP concepts
--Beginner developers
--Users needing a simple banking simulation system
+--Students learning OOP concepts
+--Beginner developers
+--Users needing a simple banking simulation system
 
 ## Core Features
 
--Deposit money into account
--Withdraw money with validation
--Transfer funds between accounts
--Check account balance
--GUI-based interaction using Swing
--Error handling using custom exceptions
+--Deposit money into account
+--Withdraw money with validation
+--Transfer funds between accounts
+--Check account balance
+--GUI-based interaction using Swing
+--Error handling using custom exceptions
 
 
 ## OOP Concepts Used
 
 🔹 Abstraction:
-  Implemented using the Account abstract class
-  Defines common structure for all account types
+   Implemented using the Account abstract class
+   Defines common structure for all account types
 🔹 Inheritance:
-  SavingsAccount and CurrentAccount extend Account
-  Reuse common properties and methods
+   SavingsAccount and CurrentAccount extend Account
+   Reuse common properties and methods
 🔹 Polymorphism:
-  withdraw() method overridden in both subclasses
-  Different behavior for different account types
+   withdraw() method overridden in both subclasses
+   Different behavior for different account types
 🔹 Exception Handling:
-  Custom exceptions:
-  InsufficientBalanceException
-  OverdraftLimitExceededException
-  AccountNotFoundException
-  Ensures safe and controlled execution
+   Custom exceptions:
+   InsufficientBalanceException
+   OverdraftLimitExceededException
+   AccountNotFoundException
+   Ensures safe and controlled execution
 🔹 Collections / Threads:
-  HashMap used in AccountRepository to store accounts
-  No multithreading used (single-threaded GUI application)
+   HashMap used in AccountRepository to store accounts
+   No multithreading used (single-threaded GUI application)
 
 ## Proposed Architecture Description
 
