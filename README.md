@@ -28,23 +28,23 @@ The project aims to develop a Bank Management System that allows users to perfor
 ## OOP Concepts Used
 
 1. Abstraction:
-   Implemented using the Account abstract class
-   Defines common structure for all account types
+   1.1 Implemented using the Account abstract class
+   1.2 Defines common structure for all account types
 2. Inheritance:
-   SavingsAccount and CurrentAccount extend Account
-   Reuse common properties and methods
+   2.1 SavingsAccount and CurrentAccount extend Account
+   2.2 Reuse common properties and methods
 3. Polymorphism:
-   withdraw() method overridden in both subclasses
-   Different behavior for different account types
+   3.1 withdraw() method overridden in both subclasses
+   3.2 Different behavior for different account types
 4. Exception Handling:
-   Custom exceptions:
-   InsufficientBalanceException
-   OverdraftLimitExceededException
-   AccountNotFoundException
-   Ensures safe and controlled execution
+   4.1 Custom exceptions:
+   4.2 InsufficientBalanceException
+   4.3 OverdraftLimitExceededException
+   4.4 AccountNotFoundException
+   4.5 Ensures safe and controlled execution
 5. Collections / Threads:
-   HashMap used in AccountRepository to store accounts
-   No multithreading used (single-threaded GUI application)
+   5.1 HashMap used in AccountRepository to store accounts
+   5.2 No multithreading used (single-threaded GUI application)
 
 ## Proposed Architecture Description
 
@@ -61,9 +61,9 @@ The system follows a layered architecture consisting of three main layers:
 3. Compile the program
 4. Run the program
 5. Use the GUI to:
-    -Enter account number
-    -Enter amount
-    -Perform operations using buttons
+    5.1 Enter account number
+    5.2 Enter amount
+    5.3 Perform operations using buttons
 
 ## Git Discipline Notes
 Minimum 10 meaningful commits required.
