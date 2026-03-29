@@ -1,7 +1,33 @@
+import java.util.HashMap;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+// Custom Exceptions
+class InsufficientBalanceException extends Exception {
+    public InsufficientBalanceException(String msg) {
+        super(msg);
+    }
+}
+
+class OverdraftLimitExceededException extends Exception {
+    public OverdraftLimitExceededException(String msg) {
+        super(msg);
+    }
+}
+
+class AccountNotFoundException extends Exception {
+    public AccountNotFoundException(String msg) {
+        super(msg);
+    }
+}
+
+
+// Abstract Class
 abstract class Account {
 
-    protected int accountNumber;
-    protected String holderName;
+    private int accountNumber;
+    private final String holderName;
     protected double balance;
 
     public Account(int accountNumber, String holderName, double balance) {
@@ -10,7 +36,14 @@ abstract class Account {
         this.balance = balance;
     }
 
+    public String getHolderName() {
+        return holderName;
+    }
+
     public void deposit(double amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Invalid deposit amount");
+        }
         balance += amount;
     }
 
@@ -23,8 +56,14 @@ abstract class Account {
     public int getAccountNumber() {
         return accountNumber;
     }
+
+    public void setAccountNumber(int accountNumber) {
+        this.accountNumber = accountNumber;
+    }
 }
 
+
+// Savings Account
 class SavingsAccount extends Account {
 
     public SavingsAccount(int accountNumber, String holderName, double balance) {
@@ -32,54 +71,65 @@ class SavingsAccount extends Account {
     }
 
     @Override
-    public void withdraw(double amount) throws Exception {
+    public void withdraw(double amount) throws InsufficientBalanceException {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Invalid withdraw amount");
+        }
+
         if (amount > balance) {
-            throw new Exception("Insufficient Balance");
+            throw new InsufficientBalanceException("Insufficient Balance");
         }
         balance -= amount;
     }
 }
 
 
+// Current Account
 class CurrentAccount extends Account {
 
-    private double overdraftLimit = 1000;
+    private final double overdraftLimit;
 
-    public CurrentAccount(int accountNumber, String holderName, double balance) {
+    public CurrentAccount(int accountNumber, String holderName, double balance, double overdraftLimit) {
         super(accountNumber, holderName, balance);
+        this.overdraftLimit = overdraftLimit;
     }
 
     @Override
-    public void withdraw(double amount) throws Exception {
+    public void withdraw(double amount) throws OverdraftLimitExceededException {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Invalid withdraw amount");
+        }
+
         if (amount > balance + overdraftLimit) {
-            throw new Exception("Overdraft limit exceeded");
+            throw new OverdraftLimitExceededException("Overdraft limit exceeded");
         }
         balance -= amount;
     }
 }
 
 
-import java.util.HashMap;
-
+// Repository
 class AccountRepository {
 
-    private HashMap<Integer, Account> accounts = new HashMap<>();
+    private final HashMap<Integer, Account> accounts = new HashMap<>();
 
     public void saveAccount(Account account) {
         accounts.put(account.getAccountNumber(), account);
     }
 
-    public Account getAccount(int accNo) throws Exception {
+    public Account getAccount(int accNo) throws AccountNotFoundException {
         if (!accounts.containsKey(accNo)) {
-            throw new Exception("Account Not Found");
+            throw new AccountNotFoundException("Account Not Found");
         }
         return accounts.get(accNo);
     }
 }
 
+
+// Service
 class BankService {
 
-    private AccountRepository repository;
+    private final AccountRepository repository;
 
     public BankService(AccountRepository repository) {
         this.repository = repository;
@@ -100,34 +150,120 @@ class BankService {
         Account receiver = repository.getAccount(to);
 
         sender.withdraw(amount);
-        receiver.deposit(amount);
+        try {
+            receiver.deposit(amount);
+        } catch (Exception e) {
+            sender.deposit(amount); // rollback
+            throw e;
+        }
+    }
+
+    public Account getAccount(int accNo) throws Exception {
+        return repository.getAccount(accNo);
     }
 }
 
-public class BankApplication {
 
-    public static void main(String[] args) {
+// Main Class (ONLY public class)
+public class BankApplication extends JFrame implements ActionListener {
+
+    private final JTextField accField;
+    private final JTextField amountField;
+    private final JTextField toAccField;
+    private final JTextArea outputArea;
+
+    private final BankService service;
+
+    public BankApplication() {
+
+        // Setup backend
+        AccountRepository repo = new AccountRepository();
+        service = new BankService(repo);
+
+        // Sample accounts
+        repo.saveAccount(new SavingsAccount(101, "Alice", 5000));
+        repo.saveAccount(new CurrentAccount(102, "Bob", 2000, 1000));
+
+        // UI Setup
+        setTitle("Bank Management System");
+        setSize(400, 400);
+        setLayout(new FlowLayout());
+
+        add(new JLabel("Account No:"));
+        accField = new JTextField(10);
+        add(accField);
+
+        add(new JLabel("Amount:"));
+        amountField = new JTextField(10);
+        add(amountField);
+
+        add(new JLabel("To Account (Transfer):"));
+        toAccField = new JTextField(10);
+        add(toAccField);
+
+        JButton depositBtn = new JButton("Deposit");
+        JButton withdrawBtn = new JButton("Withdraw");
+        JButton transferBtn = new JButton("Transfer");
+        JButton checkBtn = new JButton("Check Balance");
+
+        add(depositBtn);
+        add(withdrawBtn);
+        add(transferBtn);
+        add(checkBtn);
+
+        outputArea = new JTextArea(10, 30);
+        add(new JScrollPane(outputArea));
+
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        setVisible(true);
+
+        // Add listeners after initialization complete
+        SwingUtilities.invokeLater(() -> {
+            depositBtn.addActionListener(this);
+            withdrawBtn.addActionListener(this);
+            transferBtn.addActionListener(this);
+            checkBtn.addActionListener(this);
+        });
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
 
         try {
+            int accNo = Integer.parseInt(accField.getText());
+            double amount = amountField.getText().isEmpty() ? 0 : Double.parseDouble(amountField.getText());
 
-            AccountRepository repo = new AccountRepository();
-            BankService service = new BankService(repo);
+            switch (e.getActionCommand()) {
+                case "Deposit" -> {
+                    service.deposit(accNo, amount);
+                    outputArea.setText("Deposit Successful");
+                }
 
-            Account a1 = new SavingsAccount(101, "Alice", 5000);
-            Account a2 = new CurrentAccount(102, "Bob", 2000);
+                case "Withdraw" -> {
+                    service.withdraw(accNo, amount);
+                    outputArea.setText("Withdraw Successful");
+                }
 
-            repo.saveAccount(a1);
-            repo.saveAccount(a2);
+                case "Transfer" -> {
+                    int toAcc = Integer.parseInt(toAccField.getText());
+                    service.transfer(accNo, toAcc, amount);
+                    outputArea.setText("Transfer Successful");
+                }
 
-            service.deposit(101, 1000);
-            service.withdraw(102, 500);
-            service.transfer(101, 102, 2000);
+                case "Check Balance" -> {
+                    Account acc = service.getAccount(accNo);
+                    outputArea.setText("Balance: " + acc.getBalance());
+                }
+                default -> {}
+            }
 
-            System.out.println("Alice Balance: " + a1.getBalance());
-            System.out.println("Bob Balance: " + a2.getBalance());
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+        } catch (Exception ex) {
+            outputArea.setText("Error: " + ex.getMessage());
         }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new BankApplication());
     }
 }
