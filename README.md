@@ -3,7 +3,7 @@
 
 ## Project Title
 
----
+---Mini Banking System using Layered Architecture
 
 ## Problem Statement (max 150 words)
 
